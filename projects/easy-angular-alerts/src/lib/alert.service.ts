@@ -7,13 +7,21 @@ import { AlertComponent } from './alert.component';
 export class AlertService {
   constructor(private resolver: ComponentFactoryResolver, private appRef: ApplicationRef, private injector: Injector) {}
 
-  showAlert(config: Partial<Record<keyof AlertComponent, any>>) {
+  showAlert(config: Partial<Record<keyof AlertComponent, any>>, onConfirm?: () => void, onCancel?: () => void) {
     const factory = this.resolver.resolveComponentFactory(AlertComponent);
     const componentRef = factory.create(this.injector);
 
     Object.keys(config).forEach((key) => {
       (componentRef.instance as any)[key as keyof AlertComponent] = config[key as keyof AlertComponent];
     });
+
+    if (onConfirm) {
+      componentRef.instance.confirmed.subscribe(onConfirm);
+    }
+
+    if (onCancel) {
+      componentRef.instance.cancelled.subscribe(onCancel);
+    }
 
     this.appRef.attachView(componentRef.hostView);
 
