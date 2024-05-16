@@ -46,16 +46,16 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitte
   `]
 })
 export class AlertComponent implements OnInit, OnChanges {
-  @Input() type!: 'simple' | 'error' | 'confirmation' | 'closeable';
-  @Input() message!: string;
-  @Input() backgroundColor!: string;
-  @Input() textColor!: string;
+  @Input() type: 'simple' | 'error' | 'confirmation' | 'closeable' = 'simple';
+  @Input() message: string = '';
+  @Input() backgroundColor?: string;
+  @Input() textColor?: string;
   @Input() buttonColor?: string;
   @Input() buttonTextColor?: string;
   @Input() confirmText: string = 'Confirm';
-  @Input() duration!: number;
-  @Input() verticalPosition!: 'top' | 'center' | 'bottom';
-  @Input() horizontalPosition!: 'left' | 'center' | 'right';
+  @Input() duration: number = 3000;
+  @Input() verticalPosition: 'top' | 'center' | 'bottom' = 'bottom';
+  @Input() horizontalPosition: 'left' | 'center' | 'right' = 'center';
   @Input() fontSize: string = '1em';
   @Input() fontFamily: string = 'Arial, sans-serif';
   @Input() borderStyle: string = 'none';
@@ -84,36 +84,32 @@ export class AlertComponent implements OnInit, OnChanges {
   setDefaults() {
     switch (this.type) {
       case 'simple':
-        this.backgroundColor = this.backgroundColor || 'green';
-        this.textColor = this.textColor || 'white';
-        this.buttonColor = this.buttonColor || 'green';
-        this.buttonTextColor = this.buttonTextColor || 'white';
+        this.backgroundColor = this.backgroundColor ?? 'green';
+        this.textColor = this.textColor ?? 'white';
         break;
       case 'error':
-        this.backgroundColor = this.backgroundColor || 'red';
-        this.textColor = this.textColor || 'white';
-        this.buttonColor = this.buttonColor || 'red';
-        this.buttonTextColor = this.buttonTextColor || 'white';
+        this.backgroundColor = this.backgroundColor ?? 'red';
+        this.textColor = this.textColor ?? 'white';
         break;
       case 'confirmation':
-        this.backgroundColor = this.backgroundColor || 'blue';
-        this.textColor = this.textColor || 'white';
-        this.buttonColor = this.buttonColor || 'blue';
-        this.buttonTextColor = this.buttonTextColor || 'white';
+        this.backgroundColor = this.backgroundColor ?? 'blue';
+        this.textColor = this.textColor ?? 'white';
+        this.buttonColor = this.buttonColor ?? 'blue';
+        this.buttonTextColor = this.buttonTextColor ?? 'white';
         break;
       case 'closeable':
-        this.backgroundColor = this.backgroundColor || 'gray';
-        this.textColor = this.textColor || 'white';
-        this.buttonColor = this.buttonColor || 'gray';
-        this.buttonTextColor = this.buttonTextColor || 'white';
+        this.backgroundColor = this.backgroundColor ?? 'gray';
+        this.textColor = this.textColor ?? 'white';
+        this.buttonColor = this.buttonColor ?? 'gray';
+        this.buttonTextColor = this.buttonTextColor ?? 'white';
         break;
     }
   }
 
   getStyle() {
     const styles: { [key: string]: string } = {
-      backgroundColor: this.backgroundColor,
-      color: this.textColor,
+      backgroundColor: this.backgroundColor!,
+      color: this.textColor!,
       position: 'fixed',
       fontSize: this.fontSize,
       fontFamily: this.fontFamily,
