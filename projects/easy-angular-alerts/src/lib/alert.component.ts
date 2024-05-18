@@ -6,21 +6,21 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitte
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div [ngStyle]="getStyle()" class="alert" *ngIf="visible">
+    <div *ngIf="visible" [ngStyle]="getStyle()" class="alert">
       <div class="content">
         <div class="message" [ngStyle]="{'font-size': fontSize, 'font-family': fontFamily}">
           {{ message }}
         </div>
         <div *ngIf="type === 'confirmation'" class="confirmation-buttons">
-          <button (click)="confirm()" [ngStyle]="{'color': buttonTextColor}">
+          <button (click)="confirm()">
             <i class="fa fa-check"></i>
           </button>
-          <button (click)="cancel()" [ngStyle]="{'color': buttonTextColor}">
+          <button (click)="cancel()">
             <i class="fa fa-times"></i>
           </button>
         </div>
         <div *ngIf="type === 'closeable'" class="close-button">
-          <button (click)="close()" [ngStyle]="{'color': buttonTextColor}">
+          <button (click)="close()">
             <i class="fa fa-times"></i>
           </button>
         </div>
@@ -46,7 +46,6 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitte
       align-items: center;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       margin-bottom: 1em;
-      border: 1pt solid;
       width: auto;
       margin-left: 1em;
       margin-right: 1em;
@@ -59,9 +58,9 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitte
       animation: fadeOut 1s forwards; /* Fade out over 4 seconds */
     }
     .alert button {
-      margin-left: .07em;
+      margin-left: 0.07em;
       border: none;
-      padding: 0.5em .5em;
+      padding: 0.5em 0.5em;
       border-radius: 0.25em;
       cursor: pointer;
       background-color: inherit; /* Match button background color to alert background color */
@@ -78,8 +77,8 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitte
     .message {
       flex: 1;
       word-wrap: break-word;
-      padding-left: 0.5em; 
-      padding-right: 0.5em; 
+      padding-left: 0.5em;
+      padding-right: 0.5em;
       text-align: center;
       font-weight: 100;
     }
@@ -100,8 +99,6 @@ export class AlertComponent implements OnInit, OnChanges {
   @Input() message: string = '';
   @Input() backgroundColor?: string;
   @Input() textColor?: string;
-  @Input() buttonTextColor?: string;
-  @Input() confirmText: string = 'Confirm';
   @Input() duration: number = 3000;
   @Input() verticalPosition: 'top' | 'center' | 'bottom' = 'bottom';
   @Input() horizontalPosition: 'left' | 'center' | 'right' = 'center';
@@ -109,6 +106,7 @@ export class AlertComponent implements OnInit, OnChanges {
   @Input() fontFamily: string = 'Newsreader, sans-serif';
   @Input() borderStyle: string = 'none';
   @Input() width: string = 'auto';
+  @Input() height: string = 'auto';
   @Input() boxShadow: string = 'none';
   @Output() confirmed = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
@@ -116,6 +114,24 @@ export class AlertComponent implements OnInit, OnChanges {
   visible: boolean = true;
 
   ngOnInit() {
+    if (!this.type || !this.message) {
+      console.error('Both type and message are required for the alert.');
+      this.visible = false;
+      return;
+    }
+
+    const allowedTypes = ['simple', 'error', 'confirmation', 'closeable'];
+    if (!allowedTypes.includes(this.type)) {
+      console.error(`Invalid alert type: ${this.type}. Allowed types are: ${allowedTypes.join(', ')}.`);
+      this.visible = false;
+      return;
+    }
+
+    if (this.type === 'confirmation' && this.duration) {
+      console.warn('Duration is not applicable for confirmation alerts. Setting duration to 0.');
+      this.duration = 0;
+    }
+
     this.setDefaults();
     if (this.duration && this.type !== 'confirmation') {
       setTimeout(() => this.startFadeOut(), this.duration);
@@ -134,18 +150,16 @@ export class AlertComponent implements OnInit, OnChanges {
     if (!this.backgroundColor) {
       if (this.type === 'simple') {
         this.backgroundColor = '#DCFFE0';
-        this.borderStyle = '1pt solid #61A868';
+        this.borderStyle = this.borderStyle || '1pt solid #61A868';
       } else if (this.type === 'error') {
         this.backgroundColor = '#FFA3A3';
-        this.borderStyle = '1pt solid #9E0000';
+        this.borderStyle = this.borderStyle || '1pt solid #9E0000';
       } else if (this.type === 'confirmation') {
         this.backgroundColor = '#e6effa';
-        this.buttonTextColor = this.buttonTextColor ?? 'black';
-        this.borderStyle = '1pt solid #133C8B';
+        this.borderStyle = this.borderStyle || '1pt solid #133C8B';
       } else if (this.type === 'closeable') {
         this.backgroundColor = '#fef8eb';
-        this.buttonTextColor = this.buttonTextColor ?? 'black';
-        this.borderStyle = '1pt solid #BDB505';
+        this.borderStyle = this.borderStyle || '1pt solid #BDB505';
       }
     }
 
@@ -161,8 +175,9 @@ export class AlertComponent implements OnInit, OnChanges {
       position: 'fixed',
       fontSize: this.fontSize,
       fontFamily: this.fontFamily,
-      border: this.borderStyle,
+      border: this.borderStyle, // Ensure borderStyle is applied
       width: this.width,
+      height: this.height, // Ensure height is applied
       boxShadow: this.boxShadow,
       borderRadius: '1em',
       margin: '0.5em',
