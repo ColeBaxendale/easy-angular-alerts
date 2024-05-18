@@ -3,7 +3,7 @@
 A customizable alert library for Angular applications. Easy Angular Alerts provides a flexible way to display various types of alerts and notifications in your Angular projects.
 
 ## Features
-
+![Feature 1](./images/test1.png)
 - Simple alert
 - Error alert
 - Confirmation alert with buttons

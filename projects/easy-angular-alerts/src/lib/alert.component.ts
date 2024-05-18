@@ -213,12 +213,12 @@ export class AlertComponent implements OnInit, OnChanges {
 
   confirm() {
     this.startFadeOut();
-    setTimeout(() => this.confirmed.emit(), 1000); // Emit the event after the fade-out completes
+    this.confirmed.emit();
   }
 
   cancel() {
     this.startFadeOut();
-    setTimeout(() => this.cancelled.emit(), 1000); // Emit the event after the fade-out completes
+    this.cancelled.emit();
   }
 
   close() {
