@@ -6,42 +6,92 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitte
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div [ngStyle]="getStyle()"
-         class="alert"
-         *ngIf="visible">
-      <div *ngIf="icon" class="icon">{{ icon }}</div>
-      <div class="message" [ngStyle]="{'font-size': fontSize, 'font-family': fontFamily}">
-        {{ message }}
-      </div>
-      <div *ngIf="type === 'confirmation'">
-        <button (click)="confirm()" [ngStyle]="{'background-color': buttonColor, 'color': buttonTextColor}">{{ confirmText }}</button>
-        <button (click)="cancel()" [ngStyle]="{'background-color': buttonColor, 'color': buttonTextColor}">Cancel</button>
-      </div>
-      <div *ngIf="type === 'closeable'">
-        <button (click)="close()" [ngStyle]="{'background-color': buttonColor, 'color': buttonTextColor}">Close</button>
+    <div [ngStyle]="getStyle()" class="alert" *ngIf="visible">
+      <div class="content">
+        <div class="message" [ngStyle]="{'font-size': fontSize, 'font-family': fontFamily}">
+          {{ message }}
+        </div>
+        <div *ngIf="type === 'confirmation'" class="confirmation-buttons">
+          <button (click)="confirm()" [ngStyle]="{'color': buttonTextColor}">
+            <i class="fa fa-check"></i>
+          </button>
+          <button (click)="cancel()" [ngStyle]="{'color': buttonTextColor}">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        <div *ngIf="type === 'closeable'" class="close-button">
+          <button (click)="close()" [ngStyle]="{'color': buttonTextColor}">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
       </div>
     </div>
   `,
   styles: [`
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
     .alert {
-      padding: 1em;
-      border-radius: 0.5em;
+      padding: 1em 1em;
+      border-radius: 1em;
       z-index: 1000;
-      transition: all 0.3s ease-in-out;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1em;
+      border: 1pt solid;
+      width: auto;
+      margin-left: 1em;
+      margin-right: 1em;
+      text-align: center;
+      font-weight: 100;
+      opacity: 0; /* Initially hidden */
+      animation: fadeIn 1s forwards; /* Fade in over 2 seconds */
+    }
+    .alert.fadeOut {
+      animation: fadeOut 1s forwards; /* Fade out over 4 seconds */
     }
     .alert button {
-      margin-left: 1em;
+      margin-left: .07em;
       border: none;
-      padding: 0.5em 1em;
+      padding: 0.5em .5em;
       border-radius: 0.25em;
       cursor: pointer;
+      background-color: inherit; /* Match button background color to alert background color */
     }
-    .icon {
-      display: inline-block;
-      margin-right: 0.5em;
+    .alert button i {
+      font-size: 1.2em;
+    }
+    .content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .message {
-      display: inline-block;
+      flex: 1;
+      word-wrap: break-word;
+      padding-left: 0.5em; 
+      padding-right: 0.5em; 
+      text-align: center;
+      font-weight: 100;
+    }
+    .confirmation-buttons {
+      display: flex;
+      gap: 0.07em;
+      margin-left: auto;
+    }
+    .close-button {
+      cursor: pointer;
+      transition: background-color 0.3s;
+      color: black; /* Ensure the X is black */
     }
   `]
 })
@@ -50,17 +100,14 @@ export class AlertComponent implements OnInit, OnChanges {
   @Input() message: string = '';
   @Input() backgroundColor?: string;
   @Input() textColor?: string;
-  @Input() buttonColor?: string;
   @Input() buttonTextColor?: string;
   @Input() confirmText: string = 'Confirm';
   @Input() duration: number = 3000;
   @Input() verticalPosition: 'top' | 'center' | 'bottom' = 'bottom';
   @Input() horizontalPosition: 'left' | 'center' | 'right' = 'center';
-  @Input() fontSize: string = '1em';
-  @Input() fontFamily: string = 'Arial, sans-serif';
+  @Input() fontSize: string = '.9em';
+  @Input() fontFamily: string = 'Newsreader, sans-serif';
   @Input() borderStyle: string = 'none';
-  @Input() animation: string = 'none';
-  @Input() icon: string = '';
   @Input() width: string = 'auto';
   @Input() boxShadow: string = 'none';
   @Output() confirmed = new EventEmitter<void>();
@@ -69,40 +116,41 @@ export class AlertComponent implements OnInit, OnChanges {
   visible: boolean = true;
 
   ngOnInit() {
-    if (this.duration) {
-      setTimeout(() => this.visible = false, this.duration);
+    this.setDefaults();
+    if (this.duration && this.type !== 'confirmation') {
+      setTimeout(() => this.startFadeOut(), this.duration);
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['type'] && !changes['type'].isFirstChange()) {
-      this.setDefaults();
-    }
     this.setDefaults();
   }
 
   setDefaults() {
-    switch (this.type) {
-      case 'simple':
-        this.backgroundColor = this.backgroundColor ?? 'green';
-        this.textColor = this.textColor ?? 'white';
-        break;
-      case 'error':
-        this.backgroundColor = this.backgroundColor ?? 'red';
-        this.textColor = this.textColor ?? 'white';
-        break;
-      case 'confirmation':
-        this.backgroundColor = this.backgroundColor ?? 'blue';
-        this.textColor = this.textColor ?? 'white';
-        this.buttonColor = this.buttonColor ?? 'blue';
-        this.buttonTextColor = this.buttonTextColor ?? 'white';
-        break;
-      case 'closeable':
-        this.backgroundColor = this.backgroundColor ?? 'gray';
-        this.textColor = this.textColor ?? 'white';
-        this.buttonColor = this.buttonColor ?? 'gray';
-        this.buttonTextColor = this.buttonTextColor ?? 'white';
-        break;
+    if (this.type === 'confirmation') {
+      this.duration = 0; // Always set duration to 0 for confirmation alerts
+    }
+
+    if (!this.backgroundColor) {
+      if (this.type === 'simple') {
+        this.backgroundColor = '#DCFFE0';
+        this.borderStyle = '1pt solid #61A868';
+      } else if (this.type === 'error') {
+        this.backgroundColor = '#FFA3A3';
+        this.borderStyle = '1pt solid #9E0000';
+      } else if (this.type === 'confirmation') {
+        this.backgroundColor = '#e6effa';
+        this.buttonTextColor = this.buttonTextColor ?? 'black';
+        this.borderStyle = '1pt solid #133C8B';
+      } else if (this.type === 'closeable') {
+        this.backgroundColor = '#fef8eb';
+        this.buttonTextColor = this.buttonTextColor ?? 'black';
+        this.borderStyle = '1pt solid #BDB505';
+      }
+    }
+
+    if (!this.textColor) {
+      this.textColor = 'black';
     }
   }
 
@@ -116,7 +164,9 @@ export class AlertComponent implements OnInit, OnChanges {
       border: this.borderStyle,
       width: this.width,
       boxShadow: this.boxShadow,
-      animation: this.animation
+      borderRadius: '1em',
+      margin: '0.5em',
+      padding: '0.5em 1em'
     };
 
     switch (this.verticalPosition) {
@@ -149,17 +199,29 @@ export class AlertComponent implements OnInit, OnChanges {
     return styles;
   }
 
-  confirm() {
+  startFadeOut() {
+    const alertElement = document.querySelector('.alert');
+    if (alertElement) {
+      alertElement.classList.add('fadeOut');
+      setTimeout(() => this.fadeOut(), 1000); // Hide the element after the animation completes
+    }
+  }
+
+  fadeOut() {
     this.visible = false;
-    this.confirmed.emit();
+  }
+
+  confirm() {
+    this.startFadeOut();
+    setTimeout(() => this.confirmed.emit(), 1000); // Emit the event after the fade-out completes
   }
 
   cancel() {
-    this.visible = false;
-    this.cancelled.emit();
+    this.startFadeOut();
+    setTimeout(() => this.cancelled.emit(), 1000); // Emit the event after the fade-out completes
   }
 
   close() {
-    this.visible = false;
+    this.startFadeOut();
   }
 }
