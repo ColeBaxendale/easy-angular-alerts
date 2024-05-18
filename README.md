@@ -73,6 +73,11 @@ export class AppModule { }
 Using the Alert Service
 Inject the AlertService into your component and use it to display alerts.
 Mandatory inputs: 'type & message'
+ADD THIS IN YOUR MAIN HTML CONTAINER 
+
+```HTML
+<div #alertContainer></div>
+``` 
 
 ```typescript
 import { Component, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core';
@@ -81,7 +86,7 @@ import { AlertService } from './alert.service';
 @Component({
   selector: 'app-root',
   template: `
-    <div #alertContainer></div>
+    <div #alertContainer></div> 
     <button (click)="showSimpleAlert()">Show Simple Alert</button>
     <button (click)="showErrorAlert()">Show Error Alert</button>
     <button (click)="showConfirmationAlert()">Show Confirmation Alert</button>
@@ -134,13 +139,14 @@ export class AppComponent implements AfterViewInit {
 }
 
 /*
-  1) import { AlertService } from './alert.service';
-  2) add class memeber @ViewChild('alertContainer', { read: ViewContainerRef }) alertContainer!: ViewContainerRef;
-  3) add constructor(private alertService: AlertService) {}
-  4) add ngAfterViewInit() {
+  1) add <div #alertContainer></div> in your main container of HTML
+  2) import { AlertService } from './alert.service';
+  3) add class memeber @ViewChild('alertContainer', { read: ViewContainerRef }) alertContainer!: ViewContainerRef;
+  4) add constructor(private alertService: AlertService) {}
+  5) add ngAfterViewInit() {
     this.alertService.setViewContainerRef(this.alertContainer);
     }
-  5) now call this.alertService.showAlert({...})
+  6) now call this.alertService.showAlert({...})
 */
 
 ```
