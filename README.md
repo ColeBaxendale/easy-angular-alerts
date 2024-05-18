@@ -20,7 +20,7 @@ A customizable alert library for Angular applications. Easy Angular Alerts provi
 
 ## Default Styles
 
-<img src="https://github.com/ColeBaxendale/easy-angular-alerts/blob/master/projects/easy-angular-alerts/src/images/closeable_default.png?raw=true"/>
+<img src="https://github.com/ColeBaxendale/easy-angular-alerts/blob/master/projects/easy-angular-alerts/src/images/simple_default.png?raw=true"/>
 
 <img src="https://github.com/ColeBaxendale/easy-angular-alerts/blob/master/projects/easy-angular-alerts/src/images/error_default.png?raw=true"/>
 
