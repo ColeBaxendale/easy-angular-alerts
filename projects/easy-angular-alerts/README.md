@@ -74,7 +74,6 @@ Using the Alert Service
 Inject the AlertService into your component and use it to display alerts.
 Mandatory inputs: 'type & message'
 ADD THIS IN YOUR MAIN HTML CONTAINER 
-
 ```HTML
 <div #alertContainer></div>
 ``` 
@@ -140,7 +139,7 @@ export class AppComponent implements AfterViewInit {
 
 /*
   1) add <div #alertContainer></div> in your main container of HTML
-  2) import { AlertService } from './alert.service';
+  2) import { AlertService } from './alert.service'; && import { Component, ViewChild, ViewContainerRef, AfterViewInit }
   3) add class memeber @ViewChild('alertContainer', { read: ViewContainerRef }) alertContainer!: ViewContainerRef;
   4) add constructor(private alertService: AlertService) {}
   5) add ngAfterViewInit() {
