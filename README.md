@@ -70,85 +70,77 @@ import { EasyAngularAlertsModule } from 'easy-angular-alerts';
 export class AppModule { }
 ```
 
-Using the Alert Service
-Inject the AlertService into your component and use it to display alerts.
-Mandatory inputs: 'type & message'
-ADD THIS IN YOUR MAIN HTML CONTAINER 
+### Using the Alert Service
 
-```HTML
-<div #alertContainer></div>
-``` 
+<br>Implement neccessary imports to your app.component.ts class.
 
 ```typescript
-import { Component, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core';
-import { AlertService } from './alert.service';
+import { AfterViewInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AlertService } from 'easy-angular-alerts';
+```
+
+<br>Add this class member <br>
+
+```typescript
+@ViewChild('alertContainer', { read: ViewContainerRef })alertContainer!: ViewContainerRef;
+```
+ 
+
+<br>Inject AlertService into your app.component.ts 
+
+```typescript
+constructor(private alertService: AlertService){}
+```
+
+<br>Add ngAfterViewInit function
+
+```typescript
+ngAfterViewInit(): void {
+  this.alertService.setViewContainerRef(this.alertContainer);  
+}
+```
+
+Finally add <div #alertContainer></div> into your app.component.html
+
+```HTML
+<router-outlet></router-outlet>
+<div #alertContainer></div>
+```
+
+### Implementation Example
+
+#### app.component.ts
+
+```typescript
+import { HttpClientModule } from '@angular/common/http';
+import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterOutlet } from '@angular/router';
+import { AlertService } from 'easy-angular-alerts';
 
 @Component({
   selector: 'app-root',
-  template: `
-    <div #alertContainer></div> 
-    <button (click)="showSimpleAlert()">Show Simple Alert</button>
-    <button (click)="showErrorAlert()">Show Error Alert</button>
-    <button (click)="showConfirmationAlert()">Show Confirmation Alert</button>
-    <button (click)="showCloseableAlert()">Show Closeable Alert</button>
-  `,
-  styleUrls: ['./app.component.css'],
-  standalone: true
+  standalone: true,
+  imports: [RouterOutlet, FormsModule, HttpClientModule],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild('alertContainer', { read: ViewContainerRef }) alertContainer!: ViewContainerRef;
-  
 
-  constructor(private alertService: AlertService) {}
-
-  ngAfterViewInit() {
+    constructor(private alertService: AlertService){}
+  ngAfterViewInit(): void {
     this.alertService.setViewContainerRef(this.alertContainer);
   }
-
-  showSimpleAlert() {
-    this.alertService.showAlert({
-      type: 'simple',
-      message: 'This is a simple alert that is longer to show the width auot off!',
-    });
-  }
-
-  showErrorAlert() {
-    this.alertService.showAlert({
-      type: 'error',
-      message: 'This is an error alert!',
-    });
-  }
-
-  showConfirmationAlert() {
-    this.alertService.showAlert({
-      type: 'confirmation',
-      message: 'Do you confirm this action?',
-    }, () => {
-      alert('Confirmed!'); // On confirm do something here
-    }, () => {
-      alert('Cancelled!'); // On cancel do something here
-    });
-  }
-
-  showCloseableAlert() {
-    this.alertService.showAlert({
-      type: 'closeable',
-      message: 'This alert can be closed!',
-    });
-  }
+  title = 'frontend';
 }
+```
 
-/*
-  1) add <div #alertContainer></div> in your main container of HTML
-  2) import { AlertService } from './alert.service';
-  3) add class memeber @ViewChild('alertContainer', { read: ViewContainerRef }) alertContainer!: ViewContainerRef;
-  4) add constructor(private alertService: AlertService) {}
-  5) add ngAfterViewInit() {
-    this.alertService.setViewContainerRef(this.alertContainer);
-    }
-  6) now call this.alertService.showAlert({...})
-*/
+#### app.component.html
 
+```HTML
+<router-outlet></router-outlet>
+<div #alertContainer></div>
 ```
 
 ### Customization

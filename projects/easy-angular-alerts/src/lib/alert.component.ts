@@ -153,7 +153,7 @@ export class AlertComponent implements OnInit, OnChanges {
         this.borderStyle = this.borderStyle || '1pt solid #61A868';
       } else if (this.type === 'error') {
         this.backgroundColor = '#FFA3A3';
-        this.borderStyle = this.borderStyle || '1pt solid #9E0000';
+        this.borderStyle = this.borderStyle || '1pt solid #C50E0E';
       } else if (this.type === 'confirmation') {
         this.backgroundColor = '#e6effa';
         this.borderStyle = this.borderStyle || '1pt solid #133C8B';
