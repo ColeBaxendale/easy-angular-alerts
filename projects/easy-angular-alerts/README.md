@@ -70,9 +70,9 @@ import { EasyAngularAlertsModule } from 'easy-angular-alerts';
 export class AppModule { }
 ```
 
-#### ADD THIS INTO 'angular.ts' CONFIRMATION ICONS WILL NOT WORK WITHOUT THIS LINE
+#### ADD THIS INTO 'angular.json' CONFIRMATION ICONS WILL NOT WORK WITHOUT THIS LINE
 
-```typescript
+```json
 "styles": [
   "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
 ]
