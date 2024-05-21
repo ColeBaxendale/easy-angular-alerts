@@ -70,6 +70,15 @@ import { EasyAngularAlertsModule } from 'easy-angular-alerts';
 export class AppModule { }
 ```
 
+#### ADD THIS INTO 'angular.ts' CONFIRMATION ICONS WILL NOT WORK WITHOUT THIS LINE
+
+```typescript
+"styles": [
+  "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+]
+```
+
+
 ### Using the Alert Service
 
 <br>Implement neccessary imports to your app.component.ts class.
